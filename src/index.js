@@ -1,46 +1,31 @@
 module.exports = function check(str, bracketsConfig){
-  var str = str.split("");
-  var arr = JSON.stringify(bracketsConfig).split("");
-  function brackets(arr){
+  var arr = str.split("");
     var stack = [];
+    
     for(var i = 0; i < arr.length; i++){
-      if(arr[i] == "(" || arr[i] == "[" || arr[i] == "{"){
-        stack.push(arr[i]);
-      }
-      else if(arr[i] == ")"){
-        if(stack[stack.length -1] == "("){
-          stack.pop();
+        var flag = false;
+        for(var j = 0; j < bracketsConfig.length; j++){
+            if(arr[i] == bracketsConfig[j][0] && bracketsConfig[j][0] != bracketsConfig[j][1]){
+                stack.push(arr[i]);
+                flag = true;
+            }
         }
-        else{
-          return false;
+        
+        if(flag == false){
+            for(var j = 0; j < bracketsConfig.length; j++){
+                if(arr[i] == bracketsConfig[j][1]){
+                    if(stack[stack.length -1] == bracketsConfig[j][0]){
+                        stack.pop();
+                    }
+                    else if(bracketsConfig[j][0] == bracketsConfig[j][1]){
+                        stack.push(arr[i]);
+                    }
+                    else{
+                        return false;
+                    }
+                }
+            }
         }
-      }
-      else if(arr[i] == "]"){
-        if(stack[stack.length -1] == "["){
-          stack.pop();
-        }
-        else{
-          return false;
-        }
-      }
-      else if(arr[i] == "}"){
-        if(stack[stack.length -1] == "{"){
-          stack.pop();
-        }
-        else{
-          return false;
-        }
-      }
-      else if(arr[i] == "|"){
-        if(stack[stack.length -1] == "|"){
-          stack.pop();
-        }
-        else{
-          stack.push(arr[i]);
-        }
-      }
-  }
-        return stack;
-  }
-  return (brackets(str).length != 0 || brackets(arr).length != 0) ? false : true;
+    }
+    return (stack.length != 0) ? false : true;
 }
